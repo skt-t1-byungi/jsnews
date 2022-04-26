@@ -1,0 +1,12 @@
+type Query {
+    user: User
+}
+
+type User implements Node {
+    id: ID!
+    name: String!
+}
+
+interface Node {
+    id: ID!
+}

@@ -3,3 +3,4 @@ dist/
 .*/
 !.github/
 *.log
+__generated__
