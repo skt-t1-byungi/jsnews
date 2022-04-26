@@ -5,24 +5,29 @@ specifiers:
   '@graphql-codegen/typescript-resolvers': ^2.6.1
   '@graphql-tools/merge': ^8.2.10
   '@types/cors': ^2.8.12
+  '@types/lodash-es': ^4.17.6
   '@types/node': ^17.0.27
   '@types/react': ^18.0.6
   '@types/react-dom': ^18.0.2
   '@types/react-relay': ^13.0.2
   apollo-server-micro: ^3.6.7
   autoprefixer: ^10.4.5
+  babel-plugin-macros: ^3.1.0
   babel-plugin-relay: ^13.2.0
   cors: ^2.8.5
   graphql: ^16.4.0
+  lodash-es: ^4.17.21
   micro: ^9.3.4
   next: ^12.1.5
   next-connect: ^0.12.2
   postcss: ^8.4.12
   prettier: ^2.6.2
+  raw.macro: ^0.4.2
   react: ^18.0.0
   react-dom: ^18.0.0
   react-relay: ^13.2.0
   relay-compiler: ^13.2.0
+  relay-runtime: ^13.2.0
   tailwindcss: ^3.0.24
   typescript: ^4.6.3
 
@@ -31,25 +36,30 @@ dependencies:
   apollo-server-micro: 3.6.7_graphql@16.4.0+micro@9.3.4
   cors: 2.8.5
   graphql: 16.4.0
+  lodash-es: 4.17.21
   micro: 9.3.4
-  next: 12.1.5_react-dom@18.0.0+react@18.0.0
+  next: 12.1.5_f25e09882c053d5258a5b842325b13da
   next-connect: 0.12.2
   react: 18.0.0
   react-dom: 18.0.0_react@18.0.0
   react-relay: 13.2.0_react@18.0.0
+  relay-runtime: 13.2.0
 
 devDependencies:
   '@graphql-codegen/cli': 2.6.2_ce4e94e31657dd3cf7b362026c0276a1
   '@graphql-codegen/typescript-resolvers': 2.6.1_graphql@16.4.0
   '@types/cors': 2.8.12
+  '@types/lodash-es': 4.17.6
   '@types/node': 17.0.27
   '@types/react': 18.0.6
   '@types/react-dom': 18.0.2
   '@types/react-relay': 13.0.2
   autoprefixer: 10.4.5_postcss@8.4.12
+  babel-plugin-macros: 3.1.0
   babel-plugin-relay: 13.2.0
   postcss: 8.4.12
   prettier: 2.6.2
+  raw.macro: 0.4.2
   relay-compiler: 13.2.0
   tailwindcss: 3.0.24
   typescript: 4.6.3
@@ -1373,6 +1383,16 @@ packages:
       '@types/node': 17.0.27
     dev: true
 
+  /@types/lodash-es/4.17.6:
+    resolution: {integrity: sha512-R+zTeVUKDdfoRxpAryaQNRKk3105Rrgx2CFRClIgRGaqDTdjsm8h6IYA8ir584W3ePzkZfst5xIgDwYrlh9HLg==}
+    dependencies:
+      '@types/lodash': 4.14.182
+    dev: true
+
+  /@types/lodash/4.14.182:
+    resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
+    dev: true
+
   /@types/long/4.0.1:
     resolution: {integrity: sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==}
     dev: false
@@ -1702,6 +1722,15 @@ packages:
     dependencies:
       '@babel/runtime': 7.17.9
       cosmiconfig: 6.0.0
+      resolve: 1.22.0
+    dev: true
+
+  /babel-plugin-macros/3.1.0:
+    resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
+    engines: {node: '>=10', npm: '>=6'}
+    dependencies:
+      '@babel/runtime': 7.17.9
+      cosmiconfig: 7.0.1
       resolve: 1.22.0
     dev: true
 
@@ -3157,6 +3186,10 @@ packages:
       p-locate: 4.1.0
     dev: true
 
+  /lodash-es/4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
+    dev: false
+
   /lodash.get/4.4.2:
     resolution: {integrity: sha1-LRd/ZS+jHpObRDjVNBSZ36OCXpk=}
     dev: true
@@ -3386,7 +3419,7 @@ packages:
       trouter: 3.2.0
     dev: false
 
-  /next/12.1.5_react-dom@18.0.0+react@18.0.0:
+  /next/12.1.5_f25e09882c053d5258a5b842325b13da:
     resolution: {integrity: sha512-YGHDpyfgCfnT5GZObsKepmRnne7Kzp7nGrac07dikhutWQug7hHg85/+sPJ4ZW5Q2pDkb+n0FnmLkmd44htIJQ==}
     engines: {node: '>=12.22.0'}
     hasBin: true
@@ -3409,7 +3442,7 @@ packages:
       postcss: 8.4.5
       react: 18.0.0
       react-dom: 18.0.0_react@18.0.0
-      styled-jsx: 5.0.1_react@18.0.0
+      styled-jsx: 5.0.1_ede16a4e36630396b814fd9e00c4d805
     optionalDependencies:
       '@next/swc-android-arm-eabi': 12.1.5
       '@next/swc-android-arm64': 12.1.5
@@ -3801,6 +3834,13 @@ packages:
       iconv-lite: 0.4.19
       unpipe: 1.0.0
     dev: false
+
+  /raw.macro/0.4.2:
+    resolution: {integrity: sha512-Z+zKtCweyJ3lGYdUNq/BQwfzqQE2wrXjz0RNEes5nDniPpjvBw64sKYFXStJSfmZUmiBxv4DsN1lto982UAhFQ==}
+    engines: {node: '>=8.9.0'}
+    dependencies:
+      babel-plugin-macros: 2.8.0
+    dev: true
 
   /rc/1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
@@ -4223,7 +4263,7 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /styled-jsx/5.0.1_react@18.0.0:
+  /styled-jsx/5.0.1_ede16a4e36630396b814fd9e00c4d805:
     resolution: {integrity: sha512-+PIZ/6Uk40mphiQJJI1202b+/dYeTVd9ZnMPR80pgiWbjIwvN2zIp4r9et0BgqBuShh48I0gttPlAXA7WVvBxw==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -4236,6 +4276,7 @@ packages:
       babel-plugin-macros:
         optional: true
     dependencies:
+      babel-plugin-macros: 3.1.0
       react: 18.0.0
     dev: false
 

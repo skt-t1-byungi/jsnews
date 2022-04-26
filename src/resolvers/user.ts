@@ -4,11 +4,11 @@ export default defineResolver({
     Query: {
         user: () => ({
             id: '1',
-            name: 'Doe',
+            name: 'John Doe',
         }),
     },
     User: {
         id: parent => parent.id,
-        name: parent => `${parent.name} John Doe`,
+        name: parent => parent.name.toUpperCase(),
     },
 })
