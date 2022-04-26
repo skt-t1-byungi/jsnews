@@ -1,5 +1,12 @@
 type Query {
     user: User
+    posts: [Post]
+}
+
+type Post implements Node {
+    id: ID!
+    title: String!
+    content: String!
 }
 
 type User implements Node {
