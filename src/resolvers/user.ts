@@ -1,4 +1,4 @@
-import defineResolver from '../utils/defineResolver'
+import defineResolver from '../libs/defineResolver'
 
 export default defineResolver({
     Query: {
