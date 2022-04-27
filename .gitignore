@@ -3,4 +3,6 @@ dist/
 .*/
 !.github/
 *.log
-__generated__
+
+# generated files
+src/__*__/*.ts

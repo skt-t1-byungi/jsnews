@@ -1,7 +1,7 @@
 import '../tailwind.css'
 
 import type { AppProps } from 'next/app'
-import { RelayPageProvider } from '../libs/next-relay-tools'
+import { RelayPageProvider } from '../libs/relay-tools'
 
 export default function App({ Component, pageProps }: AppProps) {
     return (

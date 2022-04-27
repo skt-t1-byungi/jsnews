@@ -1,6 +1,6 @@
 import { graphql } from 'react-relay'
-import { usePageQuery, withRelayPage } from '../libs/next-relay-tools'
-import { pagesQuery } from './__generated__/pagesQuery.graphql'
+import { usePageQuery, withPreloader } from '../libs/relay-tools'
+import { pagesQuery } from '../__relay__/pagesQuery.graphql'
 
 const query = graphql`
     query pagesQuery {
@@ -16,6 +16,6 @@ export default function Index() {
     return <div className="bg-slate-300 text-4xl">{data.user?.name}, hello world</div>
 }
 
-export const getServerSideProps = withRelayPage(async preload => {
+export const getServerSideProps = withPreloader(async preload => {
     await preload(query)
 })

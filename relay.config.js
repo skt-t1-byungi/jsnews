@@ -3,4 +3,5 @@ module.exports = {
     src: './src',
     schema: './src/schema.gql',
     language: 'typescript',
+    artifactDirectory: './src/__relay__',
 }

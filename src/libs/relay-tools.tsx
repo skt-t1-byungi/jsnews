@@ -1,9 +1,8 @@
 import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next'
 import { AppProps } from 'next/app'
 import { PropsWithChildren, useMemo } from 'react'
-import { GraphQLTaggedNode, useLazyLoadQuery, RelayEnvironmentProvider, fetchQuery } from 'react-relay'
-import { OperationType } from 'relay-runtime'
-import { Environment, Network, RecordSource, Store } from 'relay-runtime'
+import { GraphQLTaggedNode, RelayEnvironmentProvider, fetchQuery, useLazyLoadQuery } from 'react-relay'
+import { OperationType, Environment, Network, RecordSource, Store } from 'relay-runtime'
 
 const env = new Environment({
     network: Network.create(
@@ -18,7 +17,7 @@ const env = new Environment({
                       headers: {
                           'Content-Type': 'application/json',
                       },
-                      body: JSON.stringify({ query: request, variables }),
+                      body: JSON.stringify({ query: request.text, variables }),
                   })
                   return resp.json()
               }
@@ -33,7 +32,7 @@ function preload<T extends OperationType>(query: GraphQLTaggedNode, variables: T
 const PAGE_STATE_KEY = '__RELAY-PAGE-STATE__'
 type Preloader = typeof preload
 
-export function withRelayPage(
+export function withPreloader(
     getProps: (preload: Preloader, ctx: GetServerSidePropsContext) => Promise<GetServerSidePropsResult<any> | void>
 ): GetServerSideProps {
     return async ctx => {
@@ -69,5 +68,7 @@ export function RelayPageProvider({ pageProps, children }: PropsWithChildren<{ p
 }
 
 export function usePageQuery<T extends OperationType>(query: GraphQLTaggedNode, variables: T['variables'] = {}) {
-    return useLazyLoadQuery<T>(query, variables, { fetchPolicy: 'store-only' })
+    return useLazyLoadQuery<T>(query, variables, {
+        fetchPolicy: process.env.NODE_ENV === 'development' ? 'store-only' : 'store-and-network',
+    })
 }
