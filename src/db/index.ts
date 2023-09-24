@@ -6,3 +6,5 @@ export default drizzle(createPool('mysql://jsnews:jsnews@db:3306/jsnews'), {
     schema,
     mode: 'default',
 })
+
+export * as q from 'drizzle-orm'
