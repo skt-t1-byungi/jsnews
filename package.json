@@ -1,0 +1,34 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "db:studio": "drizzle-kit studio",
+        "db:push": "drizzle-kit push:mysql"
+    },
+    "dependencies": {
+        "dayjs": "^1.11.10",
+        "drizzle-orm": "^0.28.6",
+        "mysql2": "^3.6.1",
+        "next": "^13.5.2",
+        "rc-pagination": "^3.6.1",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0"
+    },
+    "devDependencies": {
+        "@types/node": "20.6.4",
+        "@types/react": "^18.2.22",
+        "@types/react-dom": "^18.2.7",
+        "drizzle-kit": "^0.19.13",
+        "prettier": "^3.0.3",
+        "typescript": "^5.2.2"
+    },
+    "prettier": {
+        "arrowParens": "avoid",
+        "semi": false,
+        "singleQuote": true,
+        "tabWidth": 4,
+        "printWidth": 120
+    }
+}

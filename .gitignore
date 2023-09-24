@@ -1,0 +1,11 @@
+.DS_Store
+node_modules/
+dist/
+.*/
+*-lock.yaml
+*-lock.json
+*.lock
+*.log
+
+!.github/
+!.vscode/
