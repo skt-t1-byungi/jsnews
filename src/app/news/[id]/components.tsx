@@ -1,18 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-
 export function Delete({ action }: { action: () => Promise<void> }) {
-    const router = useRouter()
-    return (
-        <button
-            onClick={async () => {
-                await action()
-                confirm('삭제되었습니다.')
-                router.push('/news')
-            }}
-        >
-            삭제
-        </button>
-    )
+    return <button onClick={() => action()}>삭제</button>
 }

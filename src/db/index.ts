@@ -1,8 +1,8 @@
 import * as schema from './schema'
 import { drizzle } from 'drizzle-orm/mysql2'
-import { createPool } from 'mysql2/promise'
+import { createPool } from 'mysql2'
 
-export default drizzle(createPool('mysql://jsnews:jsnews@db:3306/jsnews'), {
+export default drizzle(createPool('mysql://jsnews:jsnews@localhost:3306/jsnews'), {
     schema,
     mode: 'default',
 })

@@ -1,22 +1,5 @@
 version: '3'
 services:
-    web:
-        container_name: app
-        image: node:18-alpine
-        command: >
-            sh -c "npm install -g pnpm &&
-                pnpm install &&
-                pnpm run dev"
-        ports:
-            - '3000:3000'
-        environment:
-            - NODE_ENV=development
-        volumes:
-            - .:/app
-            - ./node_modules:/app/node_modules
-        working_dir: /app
-        depends_on:
-            - db
     db:
         container_name: mysql-db
         image: mysql:8
