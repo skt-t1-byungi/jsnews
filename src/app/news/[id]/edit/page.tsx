@@ -7,7 +7,7 @@ import { getUser } from '@/lib/auth'
 export default async function Page({ params }: { params: { id: string } }) {
     const id = Number(params.id)
     const data = await db.query.news.findFirst({
-        where: q.eq(news.id, id),
+        where: q.and(q.eq(news.id, id), q.isNull(news.deletedAt)),
         with: { author: true },
     })
     if (!data || data.authorId !== (await getUser())?.id) {
