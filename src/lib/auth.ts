@@ -37,7 +37,7 @@ export const authOptions = {
                 const isSaved = await tx.query.oauthAccounts
                     .findFirst({
                         where: q.and(
-                            q.eq(oauthAccounts.provider, 'github'),
+                            q.eq(oauthAccounts.provider, account.provider as any),
                             q.eq(oauthAccounts.providerAccountId, account.providerAccountId),
                         ),
                     })
@@ -55,7 +55,7 @@ export const authOptions = {
                     .then(([h]) => h.insertId)
                 await tx.insert(oauthAccounts).values({
                     userId,
-                    provider: 'github',
+                    provider: account.provider as any,
                     providerAccountId: account.providerAccountId,
                 })
             })
