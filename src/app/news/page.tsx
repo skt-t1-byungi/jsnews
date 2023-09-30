@@ -1,17 +1,22 @@
 import db, { q } from '@/db'
 import { news } from '@/db/schema'
+import { getUser } from '@/lib/auth'
 import dayjs from '@/lib/dayjs'
 import Link from 'next/link'
 
 export default async function Page() {
-    const data = await db.query.news.findMany({
-        columns: {
-            id: true,
-            title: true,
-            createdAt: true,
-        },
-        orderBy: [q.desc(news.createdAt)],
-    })
+    const [data, user] = await Promise.all([
+        db.query.news.findMany({
+            columns: {
+                id: true,
+                title: true,
+                createdAt: true,
+            },
+            orderBy: [q.desc(news.createdAt)],
+            where: q.isNull(news.deletedAt),
+        }),
+        getUser(),
+    ])
     return (
         <div>
             <ul>
@@ -24,7 +29,7 @@ export default async function Page() {
                     </li>
                 ))}
             </ul>
-            <Link href="/news/write">Write</Link>
+            {user && <Link href="/news/write">Write</Link>}
         </div>
     )
 }

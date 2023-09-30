@@ -1,9 +1,14 @@
 import db from '@/db'
-import { Form } from './components'
 import { news } from '@/db/schema'
-import { redirect } from 'next/navigation'
+import { getUser } from '@/lib/auth'
+import { notFound, redirect } from 'next/navigation'
+import { Form } from './components'
 
-export default function Page() {
+export default async function Page() {
+    const user = await getUser()
+    if (!user) {
+        notFound()
+    }
     return (
         <Form
             action={async (form: FormData) => {
@@ -11,6 +16,7 @@ export default function Page() {
                 await db.insert(news).values({
                     title: form.get('title') as string,
                     contents: form.get('contents') as string,
+                    authorId: user.id,
                 })
                 redirect('/news')
             }}

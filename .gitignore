@@ -6,6 +6,7 @@ dist/
 *-lock.json
 *.lock
 *.log
+.env.local
 
 !.github/
 !.vscode/
