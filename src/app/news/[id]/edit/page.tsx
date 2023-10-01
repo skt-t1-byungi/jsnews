@@ -1,6 +1,5 @@
-import db, { q } from '@/db'
+import db, { q, news } from '@/db'
 import { Form } from './components'
-import { news } from '@/db/schema'
 import { notFound, redirect } from 'next/navigation'
 import { getUser } from '@/lib/auth'
 

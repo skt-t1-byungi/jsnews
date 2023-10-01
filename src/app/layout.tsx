@@ -1,17 +1,18 @@
-import { getSession } from '@/lib/auth'
+import { getUser } from '@/lib/auth'
 import Link from 'next/link'
 import { SignInBtn, SignOutBtn } from './components'
 import React from 'react'
 
 export default async function RootLayout({ children }: { children?: React.ReactNode }) {
-    const session = await getSession()
+    const user = await getUser()
     return (
         <html>
             <body>
                 <nav>
                     <Link href="/news">News</Link>
-                    {session ? (
+                    {user ? (
                         <>
+                            <Link href={`/u/${user.displayId}`}>프로필</Link>
                             <SignOutBtn>로그아웃</SignOutBtn>
                         </>
                     ) : (

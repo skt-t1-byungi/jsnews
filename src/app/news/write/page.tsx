@@ -1,5 +1,4 @@
-import db from '@/db'
-import { news } from '@/db/schema'
+import db, { news } from '@/db'
 import { getUser } from '@/lib/auth'
 import { notFound, redirect } from 'next/navigation'
 import { Form } from './components'

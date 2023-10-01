@@ -1,8 +1,10 @@
-import db, { q } from '@/db'
-import { oauthAccounts, users } from '@/db/schema'
-import { AuthOptions, CallbacksOptions, Session, getServerSession } from 'next-auth'
+import db, { q, oauthAccounts, users } from '@/db'
+import slugify from '@sindresorhus/slugify'
+import { AuthOptions, getServerSession } from 'next-auth'
 import GithubProvider, { GithubProfile } from 'next-auth/providers/github'
 import { cache } from 'react'
+import { pick } from 'remeda'
+import { uid } from 'uid/secure'
 
 export const authOptions = {
     providers: [
@@ -19,20 +21,23 @@ export const authOptions = {
             return Object.assign(
                 token,
                 account && {
-                    account: {
-                        provider: account.provider,
-                        providerAccountId: account.providerAccountId,
-                    },
+                    account: pick(account, ['provider', 'providerAccountId']),
                 },
             )
         },
         async session({ session, token }) {
-            return Object.assign(session, { account: token.account })
+            return Object.assign(session, {
+                account: token.account as {
+                    provider: 'github'
+                    providerAccountId: string
+                },
+            })
         },
         async signIn({ account, profile }) {
             if (!account || !profile) {
                 return false
             }
+            const ghProfile = profile as GithubProfile
             await db.transaction(async tx => {
                 const isSaved = await tx.query.oauthAccounts
                     .findFirst({
@@ -48,9 +53,15 @@ export const authOptions = {
                 const userId = await tx
                     .insert(users)
                     .values({
-                        name: profile.name!,
-                        email: profile.email!,
-                        avatar: profile.avatar_url,
+                        displayId: slugify(ghProfile.login),
+                        name: ghProfile.name!,
+                        email: ghProfile.email!,
+                        avatar: ghProfile.avatar_url,
+                    })
+                    .onDuplicateKeyUpdate({
+                        set: {
+                            displayId: slugify(`${ghProfile.login}-${uid()}`),
+                        },
                     })
                     .then(([h]) => h.insertId)
                 await tx.insert(oauthAccounts).values({
@@ -61,21 +72,10 @@ export const authOptions = {
             })
             return true
         },
-    } as Partial<CallbacksOptions<GithubProfile>>,
-} as AuthOptions
+    },
+} satisfies AuthOptions
 
-export const getSession = cache(
-    () =>
-        getServerSession(authOptions) as Promise<
-            | (Session & {
-                  account: {
-                      provider: 'github'
-                      providerAccountId: string
-                  }
-              })
-            | null
-        >,
-)
+export const getSession = cache(() => getServerSession(authOptions))
 
 export const getUser = cache(async () => {
     const session = await getSession()

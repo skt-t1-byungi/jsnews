@@ -5,12 +5,12 @@ export const news = mysqlTable('news', {
     id: int('id').autoincrement().primaryKey(),
     title: varchar('title', { length: 255 }).notNull(),
     contents: text('contents').notNull(),
-    createdAt: timestamp('created_at').notNull().defaultNow(),
-    updatedAt: timestamp('updated_at').onUpdateNow(),
-    deletedAt: timestamp('deleted_at'),
     authorId: int('author_id')
         .notNull()
         .references(() => users.id),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').onUpdateNow(),
+    deletedAt: timestamp('deleted_at'),
 })
 
 export const newsRelations = relations(news, ({ one }) => ({
@@ -25,6 +25,7 @@ export const users = mysqlTable('users', {
     name: varchar('name', { length: 100 }).notNull(),
     email: varchar('email', { length: 255 }).notNull(),
     avatar: varchar('avatar', { length: 255 }).notNull(),
+    displayId: varchar('display_id', { length: 60 }).notNull().unique(),
 })
 
 export const oauthAccounts = mysqlTable('oauth_accounts', {

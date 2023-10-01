@@ -1,5 +1,4 @@
-import db, { q } from '@/db'
-import { news } from '@/db/schema'
+import db, { q, news } from '@/db'
 import { getUser } from '@/lib/auth'
 import dayjs from '@/lib/dayjs'
 import Link from 'next/link'

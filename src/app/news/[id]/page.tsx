@@ -1,8 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
-import db, { q } from '@/db'
+import db, { q, news } from '@/db'
 import dayjs from '@/lib/dayjs'
 import { Delete } from './components'
-import { news } from '@/db/schema'
 import { getUser } from '@/lib/auth'
 import { sql } from 'drizzle-orm'
 
