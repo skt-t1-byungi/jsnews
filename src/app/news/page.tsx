@@ -21,10 +21,10 @@ export default async function Page() {
             <ul>
                 {data.map(news => (
                     <li key={news.id}>
-                        <a href={`/news/${news.id}`}>
+                        <Link href={`/news/${news.id}`}>
                             <span>{news.title}</span>
                             <sub>{dayjs(news.createdAt).fromNow()}</sub>
-                        </a>
+                        </Link>
                     </li>
                 ))}
             </ul>
