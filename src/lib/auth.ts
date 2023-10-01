@@ -34,7 +34,7 @@ export const authOptions = {
             })
         },
         async signIn({ account, profile }) {
-            if (!account || !isProfile<GithubProfile>(profile, 'github')) {
+            if (!account || !isProfile(profile, 'github')) {
                 return false
             }
             await db.transaction(async tx => {
@@ -95,6 +95,9 @@ export const getUser = cache(async () => {
 })
 
 // for type guard of profile
-function isProfile<T>(profile: any, name: string): profile is T {
+function isProfile<T extends string>(
+    profile: any,
+    name: T,
+): profile is 'github' extends T ? GithubProfile : never {
     return profile?.provider === name
 }
