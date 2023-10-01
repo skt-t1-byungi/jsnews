@@ -3,7 +3,6 @@ import db, { q, news } from '@/db'
 import dayjs from '@/lib/dayjs'
 import { Delete } from './components'
 import { getUser } from '@/lib/auth'
-import { sql } from 'drizzle-orm'
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = Number(params.id)
@@ -30,7 +29,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                             'use server'
                             await db
                                 .update(news)
-                                .set({ deletedAt: sql`CURRENT_TIMESTAMP` })
+                                .set({ deletedAt: q.sql`CURRENT_TIMESTAMP` })
                                 .where(q.eq(news.id, id))
                             redirect('/news')
                         }}
