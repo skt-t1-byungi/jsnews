@@ -34,10 +34,9 @@ export const authOptions = {
             })
         },
         async signIn({ account, profile }) {
-            if (!account || !profile) {
+            if (!account || !isProfile<GithubProfile>(profile, 'github')) {
                 return false
             }
-            const ghProfile = profile as GithubProfile
             await db.transaction(async tx => {
                 const isSaved = await tx.query.oauthAccounts
                     .findFirst({
@@ -53,14 +52,14 @@ export const authOptions = {
                 const userId = await tx
                     .insert(users)
                     .values({
-                        displayId: slugify(ghProfile.login),
-                        name: ghProfile.name!,
-                        email: ghProfile.email!,
-                        avatar: ghProfile.avatar_url,
+                        displayId: slugify(profile.login),
+                        name: profile.name!,
+                        email: profile.email!,
+                        avatar: profile.avatar_url,
                     })
                     .onDuplicateKeyUpdate({
                         set: {
-                            displayId: slugify(`${ghProfile.login}-${uid()}`),
+                            displayId: slugify(`${profile.login}-${uid()}`),
                         },
                     })
                     .then(([h]) => h.insertId)
@@ -94,3 +93,8 @@ export const getUser = cache(async () => {
         })
         .then(v => v?.user)
 })
+
+// for type guard of profile
+function isProfile<T>(profile: any, name: string): profile is T {
+    return profile.provider === name
+}
