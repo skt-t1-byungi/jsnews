@@ -96,5 +96,5 @@ export const getUser = cache(async () => {
 
 // for type guard of profile
 function isProfile<T>(profile: any, name: string): profile is T {
-    return profile.provider === name
+    return profile?.provider === name
 }
