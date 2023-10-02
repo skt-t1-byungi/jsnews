@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker'
 import { faker as koFaker } from '@faker-js/faker/locale/ko'
 import { range, sample, times } from 'remeda'
 
-loadEnvConfig(process.cwd())
+loadEnvConfig(process.cwd(), true)
 
 main()
 
