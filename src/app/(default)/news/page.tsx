@@ -21,11 +21,14 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
         .orderBy(q.desc(news.createdAt))
         .limit(PAGE_SIZE)
         .offset((page - 1) * PAGE_SIZE)
+
     if (page > 1 && data.length === 0) {
         notFound()
     }
+
     const total = data[0]?.total ?? 0
     const user = await getUser()
+
     return (
         <div>
             <ul>
