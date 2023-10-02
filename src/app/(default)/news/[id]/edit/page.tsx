@@ -14,13 +14,13 @@ export default async function Page({ params }: { params: { id: string } }) {
     }
     return (
         <Form
-            action={async (formData: FormData) => {
+            action={async (form: FormData) => {
                 'use server'
                 await db
                     .update(news)
                     .set({
-                        title: formData.get('title') as string,
-                        contents: formData.get('contents') as string,
+                        title: form.get('title') as string,
+                        contents: form.get('contents') as string,
                     })
                     .where(q.eq(news.id, id))
                 redirect(`/news/${id}`)
