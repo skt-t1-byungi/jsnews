@@ -1,9 +1,9 @@
 import { getUser } from '@/lib/auth'
 import Link from 'next/link'
-import { SignInBtn, SignOutBtn } from './components'
+import { SignInLink, SignOutBtn } from './components'
 import React from 'react'
 
-export default async function RootLayout({ children }: { children?: React.ReactNode }) {
+export default async function Layout({ children }: { children?: React.ReactNode }) {
     const user = await getUser()
     return (
         <>
@@ -15,7 +15,7 @@ export default async function RootLayout({ children }: { children?: React.ReactN
                         <SignOutBtn>로그아웃</SignOutBtn>
                     </>
                 ) : (
-                    <SignInBtn>로그인</SignInBtn>
+                    <SignInLink>로그인</SignInLink>
                 )}
             </nav>
             <main>{children}</main>

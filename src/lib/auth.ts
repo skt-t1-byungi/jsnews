@@ -16,6 +16,10 @@ export const authOptions = {
     session: {
         strategy: 'jwt',
     },
+    pages: {
+        signIn: '/auth/signin',
+        error: '/auth/error',
+    },
     callbacks: {
         async jwt({ token, account }) {
             return Object.assign(
@@ -34,7 +38,7 @@ export const authOptions = {
             })
         },
         async signIn({ account, profile }) {
-            if (!account || !isProfile(profile, 'github')) {
+            if (!account || !isGithubProfile(profile)) {
                 return false
             }
             await db.transaction(async tx => {
@@ -94,10 +98,7 @@ export const getUser = cache(async () => {
         .then(v => v?.user)
 })
 
-// for type guard of profile
-function isProfile<T extends string>(
-    profile: any,
-    name: T,
-): profile is 'github' extends T ? GithubProfile : never {
-    return profile?.provider === name
+// for type guard
+function isGithubProfile(profile: any): profile is GithubProfile {
+    return profile
 }
