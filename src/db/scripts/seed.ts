@@ -1,7 +1,7 @@
 import { loadEnvConfig } from '@next/env'
 import { faker } from '@faker-js/faker'
 import { faker as koFaker } from '@faker-js/faker/locale/ko'
-import { times } from 'remeda'
+import { range, sample, times } from 'remeda'
 
 loadEnvConfig(process.cwd())
 
@@ -28,14 +28,16 @@ async function main() {
     console.log(`Inserted ${affected[0].affectedRows} users`)
 
     const userId = affected[0].insertId
+    const userIds = range(userId, userId + 10)
     affected = await db.insert(news).values(
         times(100, () => ({
-            authorId: userId,
+            authorId: sample(userIds, 1)[0]!,
             title: koFaker.lorem.sentence(),
             contents: koFaker.lorem.paragraphs({
                 min: 3,
                 max: 50,
             }),
+            createdAt: faker.date.recent({ days: 30 }),
         })),
     )
     console.log(`Inserted ${affected[0].affectedRows} news`)

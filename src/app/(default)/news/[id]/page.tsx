@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation'
 import db, { q, news } from '@/db'
 import dayjs from '@/lib/dayjs'
-import { Delete } from './components'
+import { DeleteBtn } from './components'
 import { getUser } from '@/lib/auth'
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             {data.authorId === user?.id && (
                 <>
                     <a href={`/news/${id}/edit`}>수정</a>
-                    <Delete
+                    <DeleteBtn
                         action={async () => {
                             'use server'
                             await db
