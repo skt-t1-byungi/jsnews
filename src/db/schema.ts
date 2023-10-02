@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { int, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core'
+import { AnyMySqlColumn, int, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core'
 
 export const news = mysqlTable('news', {
     id: int('id').autoincrement().primaryKey(),
@@ -13,10 +13,33 @@ export const news = mysqlTable('news', {
     deletedAt: timestamp('deleted_at'),
 })
 
-export const newsRelations = relations(news, ({ one }) => ({
+export const newsRelations = relations(news, ({ one, many }) => ({
     author: one(users, {
         fields: [news.authorId],
         references: [users.id],
+    }),
+    comments: many(newsComments),
+}))
+
+export const newsComments = mysqlTable('news_comments', {
+    id: int('id').autoincrement().primaryKey(),
+    newsId: int('news_id')
+        .notNull()
+        .references(() => news.id),
+    parentId: int('parent_id').references((): AnyMySqlColumn => newsComments.id),
+    authorId: int('author_id')
+        .notNull()
+        .references(() => users.id),
+    contents: text('contents').notNull(),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
+    updatedAt: timestamp('updated_at').onUpdateNow(),
+    deletedAt: timestamp('deleted_at'),
+})
+
+export const newsCommentsRelations = relations(newsComments, ({ one }) => ({
+    news: one(news, {
+        fields: [newsComments.newsId],
+        references: [news.id],
     }),
 }))
 
