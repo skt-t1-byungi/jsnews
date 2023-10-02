@@ -9,24 +9,7 @@ const PAGE_SIZE = 18
 
 export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
     const page = Number(searchParams.page || 1)
-    const [total, data] = await Promise.all([
-        db
-            .select({ count: q.sql<number>`COUNT(*)` })
-            .from(news)
-            .where(q.isNull(news.deletedAt))
-            .then(res => res[0].count),
-        db.query.news.findMany({
-            columns: {
-                id: true,
-                title: true,
-                createdAt: true,
-            },
-            orderBy: [q.desc(news.createdAt)],
-            where: q.isNull(news.deletedAt),
-            limit: PAGE_SIZE,
-            offset: (page - 1) * PAGE_SIZE,
-        }),
-    ])
+    const [total, data] = await Promise.all([totalQuery(), dataQuery(page)])
     if (page > 1 && data.length === 0) {
         notFound()
     }
@@ -68,3 +51,23 @@ function Pagination({ total, current }: { total: number; current: number }) {
         </div>
     )
 }
+
+const totalQuery = () =>
+    db
+        .select({ count: q.sql<number>`COUNT(*)` })
+        .from(news)
+        .where(q.isNull(news.deletedAt))
+        .then(res => res[0].count)
+
+const dataQuery = (page: number) =>
+    db.query.news.findMany({
+        columns: {
+            id: true,
+            title: true,
+            createdAt: true,
+        },
+        orderBy: [q.desc(news.createdAt)],
+        where: q.isNull(news.deletedAt),
+        limit: PAGE_SIZE,
+        offset: (page - 1) * PAGE_SIZE,
+    })
