@@ -1,7 +1,6 @@
 import { notFound, redirect } from 'next/navigation'
 import db, { q, news } from '@/db'
 import dayjs from '@/lib/dayjs'
-import { DeleteBtn } from './components'
 import { getUser } from '@/lib/auth'
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -24,16 +23,20 @@ export default async function Page({ params }: { params: { id: string } }) {
             {data.authorId === user?.id && (
                 <>
                     <a href={`/news/${id}/edit`}>수정</a>
-                    <DeleteBtn
-                        action={async () => {
-                            'use server'
-                            await db
-                                .update(news)
-                                .set({ deletedAt: q.sql`CURRENT_TIMESTAMP` })
-                                .where(q.eq(news.id, id))
-                            redirect('/news')
-                        }}
-                    />
+                    <form>
+                        <button
+                            formAction={async () => {
+                                'use server'
+                                await db
+                                    .update(news)
+                                    .set({ deletedAt: q.sql`CURRENT_TIMESTAMP` })
+                                    .where(q.eq(news.id, id))
+                                redirect('/news')
+                            }}
+                        >
+                            삭제
+                        </button>
+                    </form>
                 </>
             )}
         </div>
