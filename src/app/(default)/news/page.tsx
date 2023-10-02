@@ -34,20 +34,20 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
 
 function Pagination({ total, current }: { total: number; current: number }) {
     const WIDTH = 3
-    const end = Math.ceil(total / PAGE_SIZE) || 1
-    const start = Math.min(Math.floor((current - 1) / WIDTH) * WIDTH + 1, end - WIDTH + 1)
-    const last = start + WIDTH - 1
+    const last = Math.ceil(total / PAGE_SIZE) || 1
+    const start = Math.min(Math.floor((current - 1) / WIDTH) * WIDTH + 1, last - WIDTH + 1)
+    const end = start + WIDTH - 1
     return (
         <div>
-            {start > 1 && <Link href={`/news`}>처음</Link>}
+            {start > 1 && <Link href="/news">처음</Link>}
             {current > 1 && <Link href={`/news?page=${current - 1}`}>이전</Link>}
-            {range(start, last + 1).map(i => (
+            {range(start, end + 1).map(i => (
                 <Link key={i} href={`/news?page=${i}`}>
                     {i === current ? <b>{i}</b> : <span>{i}</span>}
                 </Link>
             ))}
-            {current < end && <Link href={`/news?page=${current + 1}`}>다음</Link>}
-            {last < end && <Link href={`/news?page=${end}`}>마지막</Link>}
+            {current < last && <Link href={`/news?page=${current + 1}`}>다음</Link>}
+            {end < last && <Link href={`/news?page=${last}`}>마지막</Link>}
         </div>
     )
 }
