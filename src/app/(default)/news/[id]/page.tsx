@@ -14,7 +14,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     }
     const user = await getUser()
     return (
-        <div>
+        <article>
             <h1>{data.title}</h1>
             <p>{dayjs(data.createdAt).fromNow()}</p>
             <div>{data.contents}</div>
@@ -39,6 +39,6 @@ export default async function Page({ params }: { params: { id: string } }) {
                     </form>
                 </>
             )}
-        </div>
+        </article>
     )
 }

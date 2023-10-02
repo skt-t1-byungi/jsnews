@@ -30,6 +30,7 @@ export const newsComments = mysqlTable('news_comments', {
     authorId: int('author_id')
         .notNull()
         .references(() => users.id),
+    depth: int('depth').notNull().default(0),
     contents: text('contents').notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').onUpdateNow(),
@@ -40,6 +41,14 @@ export const newsCommentsRelations = relations(newsComments, ({ one }) => ({
     news: one(news, {
         fields: [newsComments.newsId],
         references: [news.id],
+    }),
+    author: one(users, {
+        fields: [newsComments.authorId],
+        references: [users.id],
+    }),
+    parent: one(newsComments, {
+        fields: [newsComments.parentId],
+        references: [newsComments.id],
     }),
 }))
 

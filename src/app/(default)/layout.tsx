@@ -1,7 +1,6 @@
 import { getUser } from '@/lib/auth'
 import Link from 'next/link'
 import { SignInLink, SignOutBtn } from './components'
-import React from 'react'
 
 export default async function Layout({ children }: { children?: React.ReactNode }) {
     const user = await getUser()
