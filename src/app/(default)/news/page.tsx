@@ -9,7 +9,7 @@ const PAGE_SIZE = 18
 
 export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
     const page = Number(searchParams.page || 1)
-    const [total, data, user] = await Promise.all([
+    const [total, data] = await Promise.all([
         db
             .select({ count: q.sql<number>`COUNT(*)` })
             .from(news)
@@ -26,11 +26,11 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
             limit: PAGE_SIZE,
             offset: (page - 1) * PAGE_SIZE,
         }),
-        getUser(),
     ])
     if (page > 1 && data.length === 0) {
         notFound()
     }
+    const user = await getUser()
     return (
         <div>
             <ul>
