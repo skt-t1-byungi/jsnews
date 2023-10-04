@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                         <div>
                             {user && (
                                 <FoldableCommentForm
-                                    action={async (form: FormData) => {
+                                    action={async form => {
                                         'use server'
                                         await writeCommentQuery({
                                             newsId,
@@ -43,7 +43,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             </ul>
             {user && (
                 <form
-                    action={async (form: FormData) => {
+                    action={async form => {
                         'use server'
                         await writeCommentQuery({
                             newsId,
