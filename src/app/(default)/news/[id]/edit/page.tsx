@@ -14,7 +14,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     }
     return (
         <Form
-            action={async (form: FormData) => {
+            action={async form => {
                 'use server'
                 await db
                     .update(news)

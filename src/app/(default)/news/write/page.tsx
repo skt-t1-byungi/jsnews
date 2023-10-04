@@ -10,7 +10,7 @@ export default async function Page() {
     }
     return (
         <Form
-            action={async (form: FormData) => {
+            action={async form => {
                 'use server'
                 await db.insert(news).values({
                     title: form.get('title') as string,

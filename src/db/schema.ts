@@ -1,5 +1,13 @@
 import { relations } from 'drizzle-orm'
-import { AnyMySqlColumn, int, mysqlTable, text, timestamp, varchar } from 'drizzle-orm/mysql-core'
+import {
+    AnyMySqlColumn,
+    index,
+    int,
+    mysqlTable,
+    text,
+    timestamp,
+    varchar,
+} from 'drizzle-orm/mysql-core'
 
 export const news = mysqlTable('news', {
     id: int('id').autoincrement().primaryKey(),
@@ -30,7 +38,6 @@ export const newsComments = mysqlTable('news_comments', {
     authorId: int('author_id')
         .notNull()
         .references(() => users.id),
-    depth: int('depth').notNull().default(0),
     contents: text('contents').notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
     updatedAt: timestamp('updated_at').onUpdateNow(),
@@ -51,6 +58,26 @@ export const newsCommentsRelations = relations(newsComments, ({ one }) => ({
         references: [newsComments.id],
     }),
 }))
+
+export const newsCommentsClosure = mysqlTable(
+    'news_comments_closure',
+    {
+        id: int('id').autoincrement().primaryKey(),
+        newsId: int('news_id')
+            .notNull()
+            .references(() => news.id),
+
+        ancestorId: int('ancestor_id').references(() => newsComments.id),
+        descendantId: int('descendant_id')
+            .notNull()
+            .references(() => newsComments.id),
+        depth: int('depth').notNull().default(0),
+        num: int('num').notNull(),
+    },
+    table => ({
+        newsIdIndex: index('news_id_index').on(table.newsId),
+    }),
+)
 
 export const users = mysqlTable('users', {
     id: int('id').autoincrement().primaryKey(),
