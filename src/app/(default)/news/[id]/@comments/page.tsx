@@ -1,4 +1,4 @@
-import db, { newsComments, newsCommentsClosure, q, users } from '@/db'
+import db, { newsComments, q } from '@/db'
 import { getUser } from '@/lib/auth'
 import dayjs from '@/lib/dayjs'
 import { unflatten } from 'flat'
@@ -66,33 +66,32 @@ export default async function Page({ params }: { params: { id: string } }) {
 
 async function dataQuery(newsId: number) {
     const result = await db.execute(q.sql`
-    WITH RECURSIVE recur AS (
-        SELECT ancestor_id, descendant_id, depth, CAST(LPAD(num, 10, '0') as CHAR(9999)) as path
-        FROM news_comments_closure
+     WITH RECURSIVE recur AS (
+        SELECT parent_id, id, depth, CAST(LPAD(index_in_news, 10, '0') as CHAR(9999)) as path
+        FROM news_comments
         WHERE news_id = ${q.sql.raw(String(newsId))} and depth = 0
         UNION ALL
-        SELECT c.ancestor_id, c.descendant_id, c.depth, CONCAT(r.path, '.', LPAD(num, 10, '0')) as path
-        FROM news_comments_closure c
-        JOIN recur r ON c.ancestor_id = r.descendant_id
+        SELECT c.parent_id, c.id, c.depth, CONCAT(r.path, '.', LPAD(index_in_news, 10, '0')) as path
+        FROM news_comments c
+        JOIN recur r ON c.parent_id = r.id
         WHERE c.depth = r.depth + 1
-    )
-    SELECT 
-        r.path as path,
-        c.id as id,
-        c.contents as contents,
-        c.created_at as createdAt,
-        c.updated_at as updatedAt,
-        r.depth as depth,
+     )
+     SELECT 
+        c.id,
+        c.contents,
+        c.created_at,
+        c.updated_at,
+        c.depth,
+        r.path,
         u.id as "author.id",
         u.name as "author.name",
         u.email as "author.email",
         u.avatar as "author.avatar",
         u.display_id as "author.displayId"
-    FROM recur r 
-    Inner JOIN news_comments c ON r.descendant_id = c.id
-    Inner JOIN users u ON c.author_id = u.id
-    WHERE c.deleted_at IS NULL
-    ORDER BY r.path;`)
+     FROM recur r 
+     Inner JOIN news_comments c ON r.id = c.id
+     Inner JOIN users u ON author_id = u.id
+     ORDER BY r.path;`)
     return ((result[0] ?? []) as any).map(unflatten) as {
         id: number
         depth: number
@@ -109,35 +108,25 @@ async function dataQuery(newsId: number) {
     }[]
 }
 
-function writeCommentQuery(arg: {
+async function writeCommentQuery(arg: {
     newsId: number
     parentId?: number
     contents: string
     authorId: number
     depth?: number
 }) {
-    return db.transaction(async tx => {
-        const insertId = await tx
-            .insert(newsComments)
-            .values({
-                contents: arg.contents,
-                authorId: arg.authorId,
-                newsId: arg.newsId,
-                ...(arg.parentId && { parentId: arg.parentId }),
+    return db.insert(newsComments).values({
+        contents: arg.contents,
+        authorId: arg.authorId,
+        newsId: arg.newsId,
+        depth: arg.depth ?? 0,
+        indexInNews: await db
+            .select({
+                count: q.sql<number>`COUNT(*)`,
             })
-            .then(([h]) => h.insertId)
-        await tx.insert(newsCommentsClosure).values({
-            depth: arg.depth ?? 0,
-            newsId: arg.newsId,
-            descendantId: insertId,
-            num: await tx
-                .select({
-                    num: q.sql<number>`MAX(num) + 1`,
-                })
-                .from(newsCommentsClosure)
-                .where(q.eq(newsCommentsClosure.newsId, arg.newsId))
-                .then(([h]) => h.num ?? 0),
-            ...(arg.parentId && { ancestorId: arg.parentId }),
-        })
+            .from(newsComments)
+            .where(q.eq(newsComments.newsId, arg.newsId))
+            .then(([h]) => h.count!),
+        ...(arg.parentId && { parentId: arg.parentId }),
     })
 }
