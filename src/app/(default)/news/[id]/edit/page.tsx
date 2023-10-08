@@ -34,7 +34,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 <span>내용</span>
                 <textarea name="contents" defaultValue={data.contents} />
             </label>
-            <button type="submit">수정</button>{' '}
+            <button type="submit">수정</button>
         </Form>
     )
 }

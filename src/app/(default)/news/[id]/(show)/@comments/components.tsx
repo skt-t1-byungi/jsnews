@@ -68,7 +68,7 @@ export function WriteForm({
     action,
     defaultContents,
 }: {
-    action: (form: FormData) => Promise<void>
+    action?: (form: FormData) => Promise<void>
     defaultContents?: string
 }) {
     return (
