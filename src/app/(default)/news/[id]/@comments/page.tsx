@@ -128,17 +128,19 @@ async function writeCommentQuery(arg: {
     authorId: number
     depth?: number
 }) {
-    return db.insert(newsComments).values({
-        contents: arg.contents,
-        authorId: arg.authorId,
-        newsId: arg.newsId,
-        depth: arg.depth ?? 0,
-        indexInNews: await db
-            .select({ count: q.sql<number>`COUNT(*)` })
-            .from(newsComments)
-            .where(q.eq(newsComments.newsId, arg.newsId))
-            .then(([h]) => h.count!),
-        ...(arg.parentId && { parentId: arg.parentId }),
+    return db.transaction(async tx => {
+        await tx.insert(newsComments).values({
+            contents: arg.contents,
+            authorId: arg.authorId,
+            newsId: arg.newsId,
+            depth: arg.depth ?? 0,
+            indexInNews: await tx
+                .select({ count: q.sql<number>`COUNT(*)` })
+                .from(newsComments)
+                .where(q.eq(newsComments.newsId, arg.newsId))
+                .then(([h]) => h.count!),
+            ...(arg.parentId && { parentId: arg.parentId }),
+        })
     })
 }
 
