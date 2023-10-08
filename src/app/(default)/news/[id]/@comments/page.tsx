@@ -21,34 +21,36 @@ export default async function Page({ params }: { params: { id: string } }) {
                         <div>{comment.deletedAt ? <span>삭제됨</span> : comment.contents}</div>
                         <div>{dayjs.utc(comment.createdAt).fromNow()}</div>
                         <div>{comment.author.name}</div>
-                        <div>
-                            {user && (
-                                <FoldableCommentForm
-                                    action={async form => {
-                                        'use server'
-                                        await writeCommentQuery({
-                                            newsId,
-                                            parentId: comment.id,
-                                            contents: form.get('contents') as string,
-                                            authorId: user.id,
-                                            depth: comment.depth + 1,
-                                        })
-                                        revalidatePath(`/news/${newsId}`)
-                                    }}
-                                />
-                            )}
-                            {user?.id === comment.author.id && (
-                                <form
-                                    action={async () => {
-                                        'use server'
-                                        await deleteCommentQuery({ newsId, id: comment.id })
-                                        revalidatePath(`/news/${newsId}`)
-                                    }}
-                                >
-                                    <button>삭제</button>
-                                </form>
-                            )}
-                        </div>
+                        {comment.deletedAt || (
+                            <div>
+                                {user && (
+                                    <FoldableCommentForm
+                                        action={async form => {
+                                            'use server'
+                                            await writeCommentQuery({
+                                                newsId,
+                                                parentId: comment.id,
+                                                contents: form.get('contents') as string,
+                                                authorId: user.id,
+                                                depth: comment.depth + 1,
+                                            })
+                                            revalidatePath(`/news/${newsId}`)
+                                        }}
+                                    />
+                                )}
+                                {user?.id === comment.author.id && (
+                                    <form
+                                        action={async () => {
+                                            'use server'
+                                            await deleteCommentQuery({ newsId, id: comment.id })
+                                            revalidatePath(`/news/${newsId}`)
+                                        }}
+                                    >
+                                        <button>삭제</button>
+                                    </form>
+                                )}
+                            </div>
+                        )}
                     </li>
                 ))}
             </ul>
