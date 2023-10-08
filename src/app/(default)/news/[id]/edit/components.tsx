@@ -5,7 +5,7 @@ export function Form({
     action,
 }: {
     children: React.ReactNode
-    action: (form: FormData) => Promise<void>
+    action?: (form: FormData) => Promise<void>
 }) {
     return <form action={action}>{children}</form>
 }

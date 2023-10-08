@@ -29,7 +29,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                                 'use server'
                                 await db
                                     .update(news)
-                                    .set({ deletedAt: q.sql`CURRENT_TIMESTAMP` })
+                                    .set({ deletedAt: new Date() })
                                     .where(q.eq(news.id, id))
                                 redirect('/news')
                             }}
