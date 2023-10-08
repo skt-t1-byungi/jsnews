@@ -1,4 +1,6 @@
-import db, { q, oauthAccounts, users } from '@/db'
+import 'server-only'
+
+import db, { oauthAccounts, q, users } from '@/db'
 import slugify from '@sindresorhus/slugify'
 import { AuthOptions, getServerSession } from 'next-auth'
 import GithubProvider, { GithubProfile } from 'next-auth/providers/github'
@@ -95,7 +97,7 @@ export const getUser = cache(async () => {
                 user: true,
             },
         })
-        .then(v => v?.user)
+        .then(v => v?.user ?? null)
 })
 
 // for type guard

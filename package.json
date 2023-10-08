@@ -19,6 +19,7 @@
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "remeda": "^1.27.0",
+        "server-only": "^0.0.1",
         "uid": "^2.0.2"
     },
     "devDependencies": {
@@ -29,6 +30,7 @@
         "drizzle-kit": "^0.19.13",
         "prettier": "^3.0.3",
         "tsx": "^3.13.0",
+        "type-fest": "^4.4.0",
         "typescript": "^5.2.2"
     },
     "prettier": {
