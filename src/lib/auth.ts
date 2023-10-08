@@ -80,10 +80,8 @@ export const authOptions = {
     },
 } satisfies AuthOptions
 
-export const getSession = cache(() => getServerSession(authOptions))
-
 export const getUser = cache(async () => {
-    const session = await getSession()
+    const session = await getServerSession(authOptions)
     if (!session) {
         return null
     }

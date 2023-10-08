@@ -2,6 +2,7 @@ import 'server-only'
 
 import db, { newsComments, q } from '@/db'
 import { unflatten } from 'flat'
+import dayjs from 'dayjs'
 
 export type CommentData = {
     id: number
@@ -56,6 +57,19 @@ export async function writeCommentQuery(arg: {
     authorId: number
     depth?: number
 }) {
+    const isTooMany = await db
+        .select({ count: q.sql<number>`COUNT(*)` })
+        .from(newsComments)
+        .where(
+            q.and(
+                q.eq(newsComments.authorId, arg.authorId),
+                q.gte(newsComments.createdAt, dayjs().subtract(30, 'second').toDate()),
+            ),
+        )
+        .then(([h]) => h.count! >= 5)
+    if (isTooMany) {
+        throw new Error('Too many')
+    }
     return db.transaction(async tx => {
         await tx.insert(newsComments).values({
             contents: arg.contents,
@@ -79,7 +93,7 @@ export function editCommentQuery(arg: { id: number; contents: string }) {
         .where(q.eq(newsComments.id, arg.id))
 }
 
-export async function deleteCommentQuery(arg: { newsId: number; id: number }) {
+export function deleteCommentQuery(arg: { newsId: number; id: number }) {
     return db.transaction(async tx => {
         await tx
             .update(newsComments)
