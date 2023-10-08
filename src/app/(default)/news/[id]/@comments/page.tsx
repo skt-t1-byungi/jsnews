@@ -18,7 +18,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                             marginLeft: `${comment.depth * 30}px`,
                         }}
                     >
-                        <div>{comment.contents}</div>
+                        <div>{comment.deletedAt ? <span>삭제됨</span> : comment.contents}</div>
                         <div>{dayjs.utc(comment.createdAt).fromNow()}</div>
                         <div>{comment.author.name}</div>
                         <div>
@@ -36,6 +36,17 @@ export default async function Page({ params }: { params: { id: string } }) {
                                         revalidatePath(`/news/${newsId}`)
                                     }}
                                 />
+                            )}
+                            {user?.id === comment.author.id && (
+                                <form
+                                    action={async () => {
+                                        'use server'
+                                        await deleteCommentQuery({ newsId, id: comment.id })
+                                        revalidatePath(`/news/${newsId}`)
+                                    }}
+                                >
+                                    <button>삭제</button>
+                                </form>
                             )}
                         </div>
                     </li>
@@ -67,22 +78,21 @@ export default async function Page({ params }: { params: { id: string } }) {
 async function dataQuery(newsId: number) {
     const result = await db.execute(q.sql`
      WITH RECURSIVE recur AS (
-        SELECT parent_id, id, depth, CAST(LPAD(index_in_news, 10, '0') as CHAR(9999)) as path
+        SELECT parent_id, id, depth, CAST(LPAD(index_in_news, 5, '0') as CHAR(9999)) as path
         FROM news_comments
-        WHERE news_id = ${q.sql.raw(String(newsId))} and depth = 0
+        WHERE news_id = ${newsId} and depth = 0 and hard_deleted = false
         UNION ALL
-        SELECT c.parent_id, c.id, c.depth, CONCAT(r.path, '.', LPAD(index_in_news, 10, '0')) as path
-        FROM news_comments c
-        JOIN recur r ON c.parent_id = r.id
-        WHERE c.depth = r.depth + 1
+        SELECT c.parent_id, c.id, c.depth, CONCAT(r.path, '.', LPAD(index_in_news, 5, '0')) as path
+        FROM recur r
+        JOIN news_comments c ON c.parent_id = r.id and c.hard_deleted = false
      )
      SELECT 
         c.id,
         c.contents,
-        c.created_at,
-        c.updated_at,
+        c.created_at as createdAt,
+        c.updated_at as updatedAt,
         c.depth,
-        r.path,
+        c.deleted_at as deletedAt,
         u.id as "author.id",
         u.name as "author.name",
         u.email as "author.email",
@@ -98,6 +108,7 @@ async function dataQuery(newsId: number) {
         contents: string
         createdAt: string
         updatedAt?: string
+        deletedAt?: string
         author: {
             id: number
             name: string
@@ -121,12 +132,32 @@ async function writeCommentQuery(arg: {
         newsId: arg.newsId,
         depth: arg.depth ?? 0,
         indexInNews: await db
-            .select({
-                count: q.sql<number>`COUNT(*)`,
-            })
+            .select({ count: q.sql<number>`COUNT(*)` })
             .from(newsComments)
             .where(q.eq(newsComments.newsId, arg.newsId))
             .then(([h]) => h.count!),
         ...(arg.parentId && { parentId: arg.parentId }),
+    })
+}
+
+async function deleteCommentQuery(arg: { newsId: number; id: number }) {
+    return db.transaction(async tx => {
+        await tx
+            .update(newsComments)
+            .set({
+                deletedAt: new Date(),
+                hardDeleted: await tx
+                    .select({ count: q.sql<number>`COUNT(*)` })
+                    .from(newsComments)
+                    .where(
+                        q.and(
+                            q.eq(newsComments.newsId, arg.newsId),
+                            q.eq(newsComments.parentId, arg.id),
+                            q.eq(newsComments.hardDeleted, false),
+                        ),
+                    )
+                    .then(([h]) => !h.count),
+            })
+            .where(q.eq(newsComments.id, arg.id))
     })
 }

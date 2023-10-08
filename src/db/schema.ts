@@ -1,6 +1,7 @@
 import { relations } from 'drizzle-orm'
 import {
     AnyMySqlColumn,
+    boolean,
     index,
     int,
     mysqlTable,
@@ -29,22 +30,30 @@ export const newsRelations = relations(news, ({ one, many }) => ({
     comments: many(newsComments),
 }))
 
-export const newsComments = mysqlTable('news_comments', {
-    id: int('id').autoincrement().primaryKey(),
-    newsId: int('news_id')
-        .notNull()
-        .references(() => news.id),
-    parentId: int('parent_id').references((): AnyMySqlColumn => newsComments.id),
-    authorId: int('author_id')
-        .notNull()
-        .references(() => users.id),
-    depth: int('depth').notNull().default(0),
-    indexInNews: int('index_in_news').notNull(),
-    contents: text('contents').notNull(),
-    createdAt: timestamp('created_at').notNull().defaultNow(),
-    updatedAt: timestamp('updated_at').onUpdateNow(),
-    deletedAt: timestamp('deleted_at'),
-})
+export const newsComments = mysqlTable(
+    'news_comments',
+    {
+        id: int('id').autoincrement().primaryKey(),
+        newsId: int('news_id')
+            .notNull()
+            .references(() => news.id),
+        parentId: int('parent_id').references((): AnyMySqlColumn => newsComments.id),
+        authorId: int('author_id')
+            .notNull()
+            .references(() => users.id),
+        depth: int('depth').notNull().default(0),
+        indexInNews: int('index_in_news').notNull(),
+        contents: text('contents').notNull(),
+        createdAt: timestamp('created_at').notNull().defaultNow(),
+        updatedAt: timestamp('updated_at').onUpdateNow(),
+        deletedAt: timestamp('deleted_at'),
+        hardDeleted: boolean('hard_deleted').notNull().default(false),
+    },
+    table => ({
+        newsIdIndex: index('news_id_index').on(table.newsId),
+        parentIdIndex: index('parent_id_index').on(table.parentId),
+    }),
+)
 
 export const newsCommentsRelations = relations(newsComments, ({ one }) => ({
     news: one(news, {
