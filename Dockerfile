@@ -1,7 +1,5 @@
 FROM node:20-slim
 
-LABEL org.opencontainers.image.source=github.com/skt-t1-byungi/jsnews
-
 # install
 WORKDIR /app
 RUN corepack enable
