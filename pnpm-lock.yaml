@@ -46,6 +46,9 @@ devDependencies:
   '@faker-js/faker':
     specifier: ^8.1.0
     version: 8.1.0
+  '@next/env':
+    specifier: ^13.5.4
+    version: 13.5.4
   '@types/node':
     specifier: 20.8.3
     version: 20.8.3
@@ -308,7 +311,6 @@ packages:
 
   /@next/env@13.5.4:
     resolution: {integrity: sha512-LGegJkMvRNw90WWphGJ3RMHMVplYcOfRWf2Be3td3sUa+1AaxmsYyANsA+znrGCBjXJNi4XAQlSoEfUxs/4kIQ==}
-    dev: false
 
   /@next/swc-darwin-arm64@13.5.4:
     resolution: {integrity: sha512-Df8SHuXgF1p+aonBMcDPEsaahNo2TCwuie7VXED4FVyECvdXfRT9unapm54NssV9tF3OQFKBFOdlje4T43VO0w==}
