@@ -2,7 +2,6 @@
 node_modules/
 dist/
 .*/
-*-lock.yaml
 *-lock.json
 *.lock
 *.log
