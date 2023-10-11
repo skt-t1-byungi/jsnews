@@ -48,4 +48,4 @@ jobs:
             - name: Set kubeconfig
               run: mkdir -p ~/.kube && cp secret/prod/kubeconfig ~/.kube/config && rm -rf secret
             - name: Deploy
-              run: sed 's/JSNEWS_IMAGE_PLACE/${{ steps.meta.outputs.tags }}/' ./k3s_template.yaml | kubectl apply -f -
+              run: sed 's|JSNEWS_IMAGE_PLACE|${{ steps.meta.outputs.tags }}|' ./k3s_template.yml | kubectl apply -f -
