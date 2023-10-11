@@ -4,21 +4,20 @@ on:
     - workflow_dispatch
 
 jobs:
-    docker:
+    deploy:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
               uses: actions/checkout@v4
-            - name: Checkout secret repo
+            - name: Checkout secret env
               uses: actions/checkout@v4
               with:
                   repository: skt-t1-byungi/jsnews-secret
                   token: ${{ secrets.JSNEWS_SECRET_GITHUB_TOKEN }}
                   ref: main
                   path: secret
-                  sparse-checkout: 'prod/.env'
             - name: Set env
-              run: cp secret/prod/.env .env
+              run: cp secret/prod/next-env .env && rm -rf secret
             - name: Docker meta
               id: meta
               uses: docker/metadata-action@v5
@@ -37,3 +36,16 @@ jobs:
                   context: .
                   labels: ${{ steps.meta.outputs.labels }}
                   tags: ${{ steps.meta.outputs.tags }}
+            - name: Install kubectl
+              uses: azure/setup-kubectl@v3
+            - name: Checkout secret kubeconfig
+              uses: actions/checkout@v4
+              with:
+                  repository: skt-t1-byungi/jsnews-secret
+                  token: ${{ secrets.JSNEWS_SECRET_GITHUB_TOKEN }}
+                  ref: main
+                  path: secret
+            - name: Set kubeconfig
+              run: mkdir -p ~/.kube && cp secret/prod/kubeconfig ~/.kube/config && rm -rf secret
+            - name: Deploy
+              run: sed 's/JSNEWS_IMAGE_PLACE/${{ steps.meta.outputs.tags }}/' ./k3s_template.yaml | kubectl apply -f -
