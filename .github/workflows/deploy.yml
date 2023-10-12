@@ -59,3 +59,4 @@ jobs:
                   source secret/prod/.env
                   set +a
                   envsubst < k3s.yml | kubectl apply -f -
+                  kubectl rollout restart deployment jsnews
