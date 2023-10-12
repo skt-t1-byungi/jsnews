@@ -17,7 +17,7 @@ jobs:
                   ref: main
                   path: secret
             - name: Set env
-              run: cp secret/prod/next-env .env && rm -rf secret
+              run: cp secret/prod/.env .env && rm -rf secret
             - name: Docker meta
               id: meta
               uses: docker/metadata-action@v5
@@ -35,7 +35,7 @@ jobs:
                   push: true
                   context: .
                   labels: ${{ steps.meta.outputs.labels }}
-                  tags: ${{ steps.meta.outputs.tags }}
+                  tags: ${{ secrets.DOCKER_REGISTRY_NAME }}/jsnews:latest
             - name: Install kubectl
               uses: azure/setup-kubectl@v3
             - name: Checkout secret kubeconfig
@@ -46,10 +46,12 @@ jobs:
                   ref: main
                   path: secret
             - name: Deploy
+              env:
+                  JSNEWS_IMAGE: ${{ secrets.DOCKER_REGISTRY_NAME }}/jsnews:latest
               run: |
                   mkdir -p ~/.kube
                   cp secret/prod/kubeconfig ~/.kube/config
                   set -a
-                  source secret/prod/env
+                  source secret/prod/.env
                   set +a
                   envsubst < k3s.yml | kubectl apply -f -
