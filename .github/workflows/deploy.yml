@@ -18,6 +18,10 @@ jobs:
                   path: secret
             - name: Set env
               run: cp secret/prod/.env .env && rm -rf secret
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v2
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v2
             - name: Docker meta
               id: meta
               uses: docker/metadata-action@v5
