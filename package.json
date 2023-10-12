@@ -6,7 +6,9 @@
         "start": "next start",
         "db:studio": "drizzle-kit studio",
         "db:push": "drizzle-kit push:mysql",
-        "db:seed": "tsx src/db/scripts/seed.ts"
+        "db:seed": "tsx src/db/scripts/seed.ts",
+        "db:generate": "drizzle-kit generate:mysql",
+        "db:migrate": "tsx src/db/scripts/migrate.ts"
     },
     "dependencies": {
         "@sindresorhus/slugify": "^2.2.1",
