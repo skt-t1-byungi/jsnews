@@ -50,8 +50,11 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
 function Pagination({ total, current }: { total: number; current: number }) {
     const WIDTH = 3
     const last = Math.ceil(total / PAGE_SIZE) || 1
-    const start = Math.min(Math.floor((current - 1) / WIDTH) * WIDTH + 1, last - WIDTH + 1)
-    const end = start + WIDTH - 1
+    const start = Math.max(
+        Math.min(Math.floor((current - 1) / WIDTH) * WIDTH + 1, last - WIDTH + 1),
+        1,
+    )
+    const end = Math.min(start + WIDTH - 1, last)
     return (
         <div>
             {start > 1 && <Link href="/news">처음</Link>}
