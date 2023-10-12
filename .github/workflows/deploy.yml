@@ -45,7 +45,11 @@ jobs:
                   token: ${{ secrets.JSNEWS_SECRET_GITHUB_TOKEN }}
                   ref: main
                   path: secret
-            - name: Set kubeconfig
-              run: mkdir -p ~/.kube && cp secret/prod/kubeconfig ~/.kube/config && rm -rf secret
             - name: Deploy
-              run: sed 's|JSNEWS_IMAGE_PLACE|${{ steps.meta.outputs.tags }}|' ./k3s_template.yml | kubectl apply -f -
+              run: |
+                  mkdir -p ~/.kube
+                  cp secret/prod/kubeconfig ~/.kube/config
+                  set -a
+                  source secret/prod/env
+                  set +a
+                  envsubst < k3s.yml | kubectl apply -f -

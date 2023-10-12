@@ -10,6 +10,9 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
 
+# migrate
+# RUN pnpm db:migrate
+
 # remove unused files
 RUN rm -rf src .github .vscode
 
