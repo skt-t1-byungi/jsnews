@@ -20,7 +20,7 @@ export type CommentData = {
     }
 }
 
-export async function dataQuery(newsId: number) {
+export async function getCommentsQuery(newsId: number) {
     const result = await db.execute(q.sql`
      WITH RECURSIVE recur AS (
         SELECT parent_id, id, depth, CAST(LPAD(index_in_news, 5, '0') as CHAR(9999)) as path

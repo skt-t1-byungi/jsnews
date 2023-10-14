@@ -1,14 +1,11 @@
-import db, { q, news } from '@/db'
 import { Form } from './components'
 import { notFound, redirect } from 'next/navigation'
 import { getUser } from '@/lib/auth'
+import { editNewsQuery, getNewsQuery } from '@/queries/news'
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = Number(params.id)
-    const data = await db.query.news.findFirst({
-        where: q.and(q.eq(news.id, id), q.isNull(news.deletedAt)),
-        with: { author: true },
-    })
+    const data = await getNewsQuery({ id })
     if (!data || data.authorId !== (await getUser())?.id) {
         notFound()
     }
@@ -16,13 +13,11 @@ export default async function Page({ params }: { params: { id: string } }) {
         <Form
             action={async form => {
                 'use server'
-                await db
-                    .update(news)
-                    .set({
-                        title: form.get('title') as string,
-                        contents: form.get('contents') as string,
-                    })
-                    .where(q.eq(news.id, id))
+                await editNewsQuery({
+                    id,
+                    title: form.get('title') as string,
+                    contents: form.get('contents') as string,
+                })
                 redirect(`/news/${id}`)
             }}
         >

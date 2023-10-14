@@ -1,14 +1,11 @@
 import { notFound, redirect } from 'next/navigation'
-import db, { q, news } from '@/db'
 import dayjs from '@/lib/dayjs'
 import { getUser } from '@/lib/auth'
+import { deleteNewsQuery, getNewsQuery } from '@/queries/news'
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = Number(params.id)
-    const data = await db.query.news.findFirst({
-        where: q.eq(news.id, id),
-        with: { author: true },
-    })
+    const data = await getNewsQuery({ id })
     if (!data) {
         notFound()
     }
@@ -27,10 +24,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                         <button
                             formAction={async () => {
                                 'use server'
-                                await db
-                                    .update(news)
-                                    .set({ deletedAt: new Date() })
-                                    .where(q.eq(news.id, id))
+                                await deleteNewsQuery({ id })
                                 redirect('/news')
                             }}
                         >

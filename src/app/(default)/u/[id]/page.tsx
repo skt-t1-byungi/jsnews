@@ -1,12 +1,11 @@
-import db, { q, users } from '@/db'
 import { getUser } from '@/lib/auth'
+import { editUserQuery, getUserByDisplayIdQuery } from '@/queries/users'
 import { QueryError } from 'mysql2'
+import { revalidatePath } from 'next/cache'
 import { notFound, redirect } from 'next/navigation'
 
 export default async function Page({ params }: { params: { id: string } }) {
-    const data = await db.query.users.findFirst({
-        where: q.eq(users.displayId, params.id),
-    })
+    const data = await getUserByDisplayIdQuery({ displayId: params.id })
     if (!data) {
         notFound()
     }
@@ -19,10 +18,10 @@ export default async function Page({ params }: { params: { id: string } }) {
                         action={async form => {
                             'use server'
                             try {
-                                await db
-                                    .update(users)
-                                    .set({ displayId: form.get('displayId') as string })
-                                    .where(q.eq(users.id, data.id))
+                                await editUserQuery({
+                                    id: data.id,
+                                    displayId: form.get('displayId') as string,
+                                })
                             } catch (err) {
                                 if ((err as QueryError)?.code === 'ER_DUP_ENTRY') {
                                     throw new Error('Duplicated')
@@ -50,10 +49,11 @@ export default async function Page({ params }: { params: { id: string } }) {
                     <form
                         action={async form => {
                             'use server'
-                            await db
-                                .update(users)
-                                .set({ name: form.get('name') as string })
-                                .where(q.eq(users.id, data.id))
+                            await editUserQuery({
+                                id: data.id,
+                                name: form.get('name') as string,
+                            })
+                            revalidatePath(`/u/${data.displayId}`)
                         }}
                     >
                         <input

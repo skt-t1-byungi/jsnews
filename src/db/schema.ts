@@ -76,6 +76,10 @@ export const users = mysqlTable('users', {
     email: varchar('email', { length: 255 }).notNull(),
     avatar: varchar('avatar', { length: 255 }).notNull(),
     displayId: varchar('display_id', { length: 60 }).notNull().unique(),
+    role: varchar('role', { length: 20, enum: ['user', 'admin', 'reporter'] })
+        .notNull()
+        .default('user'),
+    createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 
 export const oauthAccounts = mysqlTable('oauth_accounts', {

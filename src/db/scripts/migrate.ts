@@ -10,5 +10,8 @@ async function main() {
     const { default: db } = await import('../index')
     await migrate(db, {
         migrationsFolder: path.resolve(__dirname, '../migrations'),
+    }).catch(err => {
+        console.log(err.message)
+        process.exit(0)
     })
 }

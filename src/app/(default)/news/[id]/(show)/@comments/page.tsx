@@ -1,11 +1,16 @@
 import { getUser } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { Comment, WriteForm } from './components'
-import { dataQuery, deleteCommentQuery, editCommentQuery, writeCommentQuery } from './queries'
+import {
+    getCommentsQuery,
+    deleteCommentQuery,
+    editCommentQuery,
+    writeCommentQuery,
+} from '@/queries/comments'
 
 export default async function Page({ params }: { params: { id: string } }) {
     const newsId = Number(params.id)
-    const [data, user] = await Promise.all([dataQuery(newsId), getUser()])
+    const [data, user] = await Promise.all([getCommentsQuery(newsId), getUser()])
     return (
         <>
             <ul>

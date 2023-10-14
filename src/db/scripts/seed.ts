@@ -2,6 +2,8 @@ import { loadEnvConfig } from '@next/env'
 import { faker } from '@faker-js/faker'
 import { faker as koFaker } from '@faker-js/faker/locale/ko'
 import { range, sample, times } from 'remeda'
+import { newsComments } from '../schema'
+import { writeCommentQuery } from '@/queries/comments'
 
 loadEnvConfig(process.cwd(), true)
 
@@ -14,6 +16,7 @@ async function main() {
     await db.execute(q.sql`TRUNCATE TABLE oauth_accounts`)
     await db.execute(q.sql`TRUNCATE TABLE news`)
     await db.execute(q.sql`TABLE users;`)
+    await db.execute(q.sql`TABLE news_comments`)
     await db.execute(q.sql`set foreign_key_checks=1;`)
     console.log('Truncated tables')
 
@@ -27,7 +30,7 @@ async function main() {
     )
     console.log(`Inserted ${affected[0].affectedRows} users`)
 
-    const userId = affected[0].insertId
+    let userId = affected[0].insertId
     const userIds = range(userId, userId + 10)
     affected = await db.insert(news).values(
         times(100, () => ({
@@ -41,5 +44,15 @@ async function main() {
         })),
     )
     console.log(`Inserted ${affected[0].affectedRows} news`)
+
+    for (const n of range(0, 100)) {
+        const result = await writeCommentQuery({
+            authorId: userId,
+            contents: koFaker.lorem.paragraphs({ min: 1, max: 3 }),
+            newsId: affected[0].insertId + n,
+        })
+        if (n === 5) userId++
+    }
+
     process.exit(0)
 }
