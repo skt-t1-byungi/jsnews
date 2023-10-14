@@ -10,7 +10,7 @@ export default async function Layout({ children }: { children?: React.ReactNode 
                 <Link href="/news">News</Link>
                 {user ? (
                     <>
-                        <Link href={`/u/${user.displayId}`}>프로필</Link>
+                        <Link href="/me">프로필</Link>
                         <SignOutBtn>로그아웃</SignOutBtn>
                     </>
                 ) : (
