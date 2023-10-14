@@ -1,4 +1,4 @@
-import { getUser } from '@/lib/auth'
+import { getUser, hasRole } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { Comment, WriteForm } from './components'
 import {
@@ -34,7 +34,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                                 : undefined
                         }
                         editAction={
-                            comment.author.id === user?.id
+                            comment.author.id === user?.id || hasRole(user, 'admin')
                                 ? async form => {
                                       'use server'
                                       await editCommentQuery({
@@ -46,7 +46,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                                 : undefined
                         }
                         deleteAction={
-                            comment.author.id === user?.id
+                            comment.author.id === user?.id || hasRole(user, 'admin')
                                 ? async () => {
                                       'use server'
                                       await deleteCommentQuery({ id: comment.id, newsId })

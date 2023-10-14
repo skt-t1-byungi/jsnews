@@ -1,8 +1,8 @@
 'use client'
 
 import dayjs from '@/lib/dayjs'
+import type { CommentData } from '@/queries/comments'
 import { useState } from 'react'
-import type { CommentData } from './queries'
 
 export function Comment({
     data,

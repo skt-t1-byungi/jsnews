@@ -90,9 +90,7 @@ export const roles = mysqlTable(
     'roles',
     {
         id: int('id').autoincrement().primaryKey(),
-        name: varchar('name', { length: 20, enum: ['admin', 'reporter'] })
-            .notNull()
-            .unique(),
+        name: varchar('name', { length: 20, enum: ['admin', 'reporter'] }).notNull(),
         userId: int('user_id').references(() => users.id),
     },
     table => ({

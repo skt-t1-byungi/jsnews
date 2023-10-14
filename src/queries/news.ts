@@ -4,7 +4,7 @@ import dayjs from 'dayjs'
 import db, { q } from '../db'
 import { news } from '../db/schema'
 
-export function getNewsQuery(arg: { id: number }) {
+export function getNewsArticleQuery(arg: { id: number }) {
     return db.query.news.findFirst({
         where: q.and(q.eq(news.id, arg.id), q.isNull(news.deletedAt)),
         with: { author: true },

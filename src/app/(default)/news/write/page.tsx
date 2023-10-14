@@ -26,7 +26,7 @@ export default async function Page() {
             </label>
             <label>
                 <span>내용</span>
-                <textarea name="contents"></textarea>
+                <textarea name="contents" />
             </label>
             <button type="submit">작성</button>
         </Form>

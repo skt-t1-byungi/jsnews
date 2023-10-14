@@ -1,12 +1,13 @@
-import { Form } from './components'
+import { getUser, hasRole } from '@/lib/auth'
+import { editNewsQuery, getNewsArticleQuery } from '@/queries/news'
 import { notFound, redirect } from 'next/navigation'
-import { getUser } from '@/lib/auth'
-import { editNewsQuery, getNewsQuery } from '@/queries/news'
+import { Form } from './components'
 
 export default async function Page({ params }: { params: { id: string } }) {
     const id = Number(params.id)
-    const data = await getNewsQuery({ id })
-    if (!data || data.authorId !== (await getUser())?.id) {
+    const data = await getNewsArticleQuery({ id })
+    const user = await getUser()
+    if (!data || !user || data.authorId !== user.id || !hasRole(user, 'admin')) {
         notFound()
     }
     return (

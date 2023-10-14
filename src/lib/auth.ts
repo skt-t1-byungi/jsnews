@@ -1,6 +1,6 @@
 import 'server-only'
 
-import db, { oauthAccounts, q, users } from '@/db'
+import db, { oauthAccounts, q, roles, users } from '@/db'
 import slugify from '@sindresorhus/slugify'
 import { AuthOptions, getServerSession } from 'next-auth'
 import GithubProvider, { GithubProfile } from 'next-auth/providers/github'
@@ -92,7 +92,11 @@ export const getUser = cache(async () => {
                 q.eq(oauthAccounts.providerAccountId, session.account.providerAccountId),
             ),
             with: {
-                user: true,
+                user: {
+                    with: {
+                        roles: true,
+                    },
+                },
             },
         })
         .then(v => v?.user ?? null)
@@ -101,4 +105,13 @@ export const getUser = cache(async () => {
 // for type guard
 function isGithubProfile(profile: any): profile is GithubProfile {
     return profile
+}
+
+type Role = (typeof roles.$inferSelect)['name']
+export function hasRole(user: Awaited<ReturnType<typeof getUser>>, role: Role | Role[]) {
+    if (!user) {
+        return false
+    }
+    const roles = Array.isArray(role) ? role : [role]
+    return user.roles?.some(r => roles.includes(r.name))
 }
