@@ -76,11 +76,36 @@ export const users = mysqlTable('users', {
     email: varchar('email', { length: 255 }).notNull(),
     avatar: varchar('avatar', { length: 255 }).notNull(),
     displayId: varchar('display_id', { length: 60 }).notNull().unique(),
-    role: varchar('role', { length: 20, enum: ['user', 'admin', 'reporter'] })
-        .notNull()
-        .default('user'),
     createdAt: timestamp('created_at').notNull().defaultNow(),
 })
+
+export const usersRelations = relations(users, ({ many }) => ({
+    oauthAccounts: many(oauthAccounts),
+    news: many(news),
+    comments: many(newsComments),
+    roles: many(roles),
+}))
+
+export const roles = mysqlTable(
+    'roles',
+    {
+        id: int('id').autoincrement().primaryKey(),
+        name: varchar('name', { length: 20, enum: ['admin', 'reporter'] })
+            .notNull()
+            .unique(),
+        userId: int('user_id').references(() => users.id),
+    },
+    table => ({
+        userIdIndex: index('user_id_index').on(table.userId),
+    }),
+)
+
+export const rolesRelations = relations(roles, ({ one }) => ({
+    user: one(users, {
+        fields: [roles.userId],
+        references: [users.id],
+    }),
+}))
 
 export const oauthAccounts = mysqlTable('oauth_accounts', {
     id: int('id').autoincrement().primaryKey(),
