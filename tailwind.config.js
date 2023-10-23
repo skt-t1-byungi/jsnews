@@ -3,9 +3,15 @@ module.exports = {
     content: ['./src/**/*.{ts,tsx}'],
     theme: {
         extend: {
-            // https://colors.muz.li/palette/434e56/f2f3f2/fae914/98a6b0/846b4c
-            // https://colors.muz.li/palette/234155/e3e3e4/585a5c/6cb1a4/acca3d
+            fontFamily: {
+                brand: ['var(--font-poiret-one)'],
+            },
+            maxWidth: {
+                container: '1280px',
+            },
             colors: {
+                // https://colors.muz.li/palette/434e56/f2f3f2/fae914/98a6b0/846b4c
+                // https://colors.muz.li/palette/234155/e3e3e4/585a5c/6cb1a4/acca3d
                 'limed-spruce': {
                     50: '#f4f6f7',
                     100: '#e3e8ea',

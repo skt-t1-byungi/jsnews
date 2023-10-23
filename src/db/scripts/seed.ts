@@ -2,8 +2,6 @@ import { loadEnvConfig } from '@next/env'
 import { faker } from '@faker-js/faker'
 import { faker as koFaker } from '@faker-js/faker/locale/ko'
 import { range, sample, times } from 'remeda'
-import { newsComments } from '../schema'
-import { writeCommentQuery } from '@/queries/comments'
 
 loadEnvConfig(process.cwd(), true)
 
@@ -44,15 +42,5 @@ async function main() {
         })),
     )
     console.log(`Inserted ${affected[0].affectedRows} news`)
-
-    for (const n of range(0, 100)) {
-        const result = await writeCommentQuery({
-            authorId: userId,
-            contents: koFaker.lorem.paragraphs({ min: 1, max: 3 }),
-            newsId: affected[0].insertId + n,
-        })
-        if (n === 5) userId++
-    }
-
     process.exit(0)
 }

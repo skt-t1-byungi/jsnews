@@ -16,13 +16,23 @@ export default async function Page({ searchParams }: { searchParams: { page?: st
     const total = data[0]?.total ?? 0
     const user = await getUser()
     return (
-        <div>
-            <ul>
+        <div className="max-w-container mx-auto">
+            <ul className="grid grid-cols-2 gap-8">
                 {data.map(news => (
-                    <li key={news.id}>
-                        <Link href={`/news/${news.id}`}>
-                            <span>{news.title}</span>
-                            <sub>{dayjs(news.createdAt).fromNow()}</sub>
+                    <li
+                        key={news.id}
+                        className="h-[160px] overflow-hidden rounded-xl border-2 border-concrete-600 bg-white"
+                    >
+                        <Link href={`/news/${news.id}`} className="flex h-full items-stretch">
+                            <img
+                                src={`https://picsum.photos/200?random=${news.id}`}
+                                alt="thumbnail"
+                                className="object-cover"
+                            />
+                            <div className="p-4">
+                                <span>{news.title}</span>
+                                <sub>{dayjs(news.createdAt).fromNow()}</sub>
+                            </div>
                         </Link>
                     </li>
                 ))}

@@ -1,3 +1,11 @@
+import { Poiret_One } from 'next/font/google'
+
+const poiretOne = Poiret_One({
+    weight: '400',
+    variable: '--font-poiret-one',
+    subsets: ['latin'],
+})
+
 import './global.css'
 
 export const metadata = {
@@ -6,7 +14,7 @@ export const metadata = {
 
 export default function RootLayout({ children }: { children?: React.ReactNode }) {
     return (
-        <html>
+        <html className={poiretOne.variable}>
             <body className="bg-concrete-100">{children}</body>
         </html>
     )

@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 :root {
-    @apply overflow-y-visible text-limed-spruce-950;
+    @apply overflow-y-visible text-concrete-950;
 }

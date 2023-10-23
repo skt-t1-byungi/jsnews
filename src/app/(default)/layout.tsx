@@ -6,20 +6,22 @@ export default async function Layout({ children }: { children?: React.ReactNode 
     const user = await getUser()
     return (
         <>
-            <header className="flex h-14 justify-center gap-4 border-b-2 border-limed-spruce-900">
-                <div className="flex w-full max-w-7xl items-center justify-start">
-                    <Link href="/">JSNE.WS</Link>
-                    <nav className="text-l4 ml-28 flex w-full gap-2">
+            <header className="font-brand mb-8 flex h-16 justify-center gap-4">
+                <div className="flex w-full max-w-4xl items-center justify-start">
+                    <Link href="/" className="whitespace-nowrap text-2xl font-bold">
+                        JSnews
+                    </Link>
+                    <nav className="ml-28 flex w-full gap-4 text-xl">
                         <Link href="/news" className="mr-auto">
-                            NEWS
+                            news
                         </Link>
                         {user ? (
                             <>
-                                <Link href="/me">프로필</Link>
-                                <SignOutBtn>로그아웃</SignOutBtn>
+                                <Link href="/me">profile</Link>
+                                <SignOutBtn>logout</SignOutBtn>
                             </>
                         ) : (
-                            <SignInLink>로그인</SignInLink>
+                            <SignInLink>login</SignInLink>
                         )}
                     </nav>
                 </div>
