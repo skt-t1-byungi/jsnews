@@ -7,6 +7,7 @@ import {
     mysqlTable,
     text,
     timestamp,
+    unique,
     varchar,
 } from 'drizzle-orm/mysql-core'
 
@@ -95,8 +96,11 @@ export const roles = mysqlTable(
     },
     table => ({
         userIdIndex: index('user_id_index').on(table.userId),
+        userIdNameUnique: unique('user_id_name_unique').on(table.userId, table.name),
     }),
 )
+
+export type Role = (typeof roles.$inferSelect)['name']
 
 export const rolesRelations = relations(roles, ({ one }) => ({
     user: one(users, {

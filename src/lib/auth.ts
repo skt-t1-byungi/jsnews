@@ -1,6 +1,6 @@
 import 'server-only'
 
-import db, { oauthAccounts, q, roles, users } from '@/db'
+import db, { Role, oauthAccounts, q, roles, users } from '@/db'
 import slugify from '@sindresorhus/slugify'
 import { AuthOptions, getServerSession } from 'next-auth'
 import GithubProvider, { GithubProfile } from 'next-auth/providers/github'
@@ -107,7 +107,6 @@ function isGithubProfile(profile: any): profile is GithubProfile {
     return profile
 }
 
-type Role = (typeof roles.$inferSelect)['name']
 export function hasRole(user: Awaited<ReturnType<typeof getUser>>, role: Role | Role[]) {
     if (!user) {
         return false
