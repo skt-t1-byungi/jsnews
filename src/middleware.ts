@@ -6,7 +6,8 @@ export function middleware(req: NextRequest) {
     }
 
     // for dev preview
-    if (req.headers.get('Authorization') !== `Basic ${btoa(`${process.env.DEV_AUTH_ID}:${process.env.DEV_AUTH_PW}`)}`) {
+    const credential = btoa(`${process.env.DEV_AUTH_ID}:${process.env.DEV_AUTH_PW}`)
+    if (req.headers.get('Authorization') === `Basic ${credential}`) {
         return NextResponse.json(
             { error: 'Unauthorized' },
             {

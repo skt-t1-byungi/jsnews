@@ -1,6 +1,6 @@
 import 'server-only'
 
-import db, { Role, oauthAccounts, q, roles, users } from '@/db'
+import db, { Role, oauthAccounts, q, users } from '@/db'
 import slugify from '@sindresorhus/slugify'
 import { AuthOptions, getServerSession } from 'next-auth'
 import GithubProvider, { GithubProfile } from 'next-auth/providers/github'
@@ -59,8 +59,8 @@ export const authOptions = {
                     .insert(users)
                     .values({
                         displayId: slugify(profile.login),
-                        name: profile.name!,
-                        email: profile.email!,
+                        name: profile.name,
+                        email: profile.email,
                         avatar: profile.avatar_url,
                     })
                     .onDuplicateKeyUpdate({
