@@ -8,7 +8,7 @@ import { notFound } from 'next/navigation'
 const PER_PAGE = 18
 
 export default async function Page({ searchParams }: { searchParams: { page?: string } }) {
-    const page = Number(searchParams.page || 1)
+    const page = Number(searchParams.page ?? 1)
     const data = await getPagedNewsQuery({ page, perPage: PER_PAGE })
     if (page > 1 && data.length === 0) {
         notFound()

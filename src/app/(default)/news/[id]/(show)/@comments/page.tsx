@@ -1,12 +1,7 @@
 import { getUser, hasRole } from '@/lib/auth'
 import { revalidatePath } from 'next/cache'
 import { Comment, WriteForm } from './components'
-import {
-    getCommentsQuery,
-    deleteCommentQuery,
-    editCommentQuery,
-    writeCommentQuery,
-} from '@/queries/comments'
+import { getCommentsQuery, deleteCommentQuery, editCommentQuery, writeCommentQuery } from '@/queries/comments'
 
 export default async function Page({ params }: { params: { id: string } }) {
     const newsId = Number(params.id)

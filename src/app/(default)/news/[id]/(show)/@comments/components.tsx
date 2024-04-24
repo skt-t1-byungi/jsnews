@@ -39,12 +39,10 @@ export function Comment({
             </div>
             <div>{dayjs.utc(data.createdAt).fromNow()}</div>
             <div>{data.author.name}</div>
-            {data.deletedAt || (
+            {data.deletedAt ?? (
                 <div>
-                    <>
-                        {replyAction && <button onClick={() => setWriteMode('reply')}>답글</button>}
-                        {editAction && <button onClick={() => setWriteMode('edit')}>수정</button>}
-                    </>
+                    {replyAction && <button onClick={() => setWriteMode('reply')}>답글</button>}
+                    {editAction && <button onClick={() => setWriteMode('edit')}>수정</button>}
                     {deleteAction && (
                         <form action={deleteAction}>
                             <button>삭제</button>
